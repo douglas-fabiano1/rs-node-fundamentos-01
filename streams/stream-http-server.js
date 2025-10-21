@@ -15,15 +15,17 @@ class InvertSignStream extends Transform {
 // res => WritableStream
 
 // Criação do servidor
-const server = http.createServer((req, res) => {
-  // Definindo headers para manter a conexão aberta e transmitir em partes
-  res.setHeader('Content-Type', 'text/plain')
-  res.setHeader('Transfer-Encoding', 'chunked')
+const server = http.createServer(async (req, res) => {
+  const buffers = []
 
-  // Pipe do corpo da requisição para o transformador e depois para a resposta
-  req
-    .pipe(new InvertSignStream())
-    .pipe(res)
+  for await (const chunk of req){
+    buffers.push(chunk)
+  }
+
+  const fullStreamContent = Buffer.concat(buffers).toString()
+  console.log(fullStreamContent)
+
+  res.end(fullStreamContent)
 })
 
 // Ajuste opcional para evitar timeout automático (até 2 minutos)
