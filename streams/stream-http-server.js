@@ -14,7 +14,6 @@ class InvertSignStream extends Transform {
 // req => ReadableStream
 // res => WritableStream
 
-// Criação do servidor
 const server = http.createServer(async (req, res) => {
   const buffers = []
 
@@ -28,11 +27,9 @@ const server = http.createServer(async (req, res) => {
   res.end(fullStreamContent)
 })
 
-// Ajuste opcional para evitar timeout automático (até 2 minutos)
 server.keepAliveTimeout = 120000
 server.headersTimeout = 120000
 
-// Inicia o servidor na porta 3334
 server.listen(3334, () => {
   console.log('Servidor escutando em http://localhost:3334')
 })
