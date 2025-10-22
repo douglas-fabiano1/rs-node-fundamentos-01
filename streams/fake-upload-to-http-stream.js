@@ -1,6 +1,5 @@
 import { Readable } from 'node:stream'
 
-// Stream que envia números de 1 a 100, um por segundo
 class OneToHundredStream extends Readable {
   index = 1
 
@@ -18,11 +17,10 @@ class OneToHundredStream extends Readable {
   }
 }
 
-// Envia o stream para o servidor via fetch
 fetch('http://localhost:3334', {
   method: 'POST',
   body: new OneToHundredStream(),
-  duplex: 'half', // necessário para streaming no fetch
+  duplex: 'half',
 }).then(response => {
     return response.text()
   }).then(data => {
