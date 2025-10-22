@@ -1,7 +1,28 @@
 // { "users": [...] } 
+import fs from 'node:fs/promises'
+import { URL } from 'node:url'
+
+// Deixa a criação do arquivo db.json relativa ao arquivo database.js
+const databasePath = new URL('../db.json', import.meta.url)
+console.log(databasePath)
 
 export class Database {
     #database = {}
+    
+    constructor(){
+        fs.readFile(databasePath, 'utf8')
+            .then(data => {
+                this.#database = JSON.parse(data) // parse para parsear os dados
+            }).catch(() => {
+                this.#persist() // Cria o arquivo, mesmo se estiver vazio.
+            })
+    }
+
+    // Método que vai escrever o nosso BD em um arquivo físico.
+    // stringify para escrever os dados
+    #persist() {
+        fs.writeFile(databasePath, JSON.stringify(this.#database))
+    }
 
     // Método de seleção da tabela
     select(table) {
@@ -19,6 +40,8 @@ export class Database {
         } else {
             this.#database[table] = [data]
         }
+
+        this.#persist()
 
         return data
     }
