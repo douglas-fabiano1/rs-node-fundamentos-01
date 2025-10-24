@@ -11,7 +11,12 @@ export const routes = [
         handler: (request, response) => {
             console.log(request.query)
 
-            const users = database.select('users')
+            const { search } = request.query
+
+            const users = database.select('users', search ? {
+                name: search,
+                email: search,
+            } : null)
 
             return response.end(JSON.stringify(users))
         }
@@ -45,7 +50,7 @@ export const routes = [
                 email,
             })
 
-            return response.writeHead(204).end() // 204 - Success without content
+            return response.writeHead(204).end()
         },
     },
     {
@@ -56,7 +61,7 @@ export const routes = [
 
             database.delete('users', id)
 
-            return response.writeHead(204).end() // 204 - Success without content
+            return response.writeHead(204).end()
         },
     }
 ]
